@@ -1,0 +1,92 @@
+name: Pre-commit auto-update
+
+on:
+  schedule:
+    # Stagger from the other scheduled workflows that write to master so each PR merges before the next one opens.
+    - cron: '0 19 * * 1-4'
+  workflow_dispatch:
+
+jobs:
+  update-pre-commit:
+    runs-on: ubuntu-latest
+    env:
+      FORCE_COLOR: 1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          ref: 'master'
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version-file: .python-version
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v10.3.3
+
+      - name: Update dependencies
+        run: |
+          set -x
+          uv pip install --system pre-commit packaging
+          python scripts/pre_commit_stable.py autoupdate --config="tests/.pre-commit-config.yaml"
+
+      - name: Gather changes
+        id: gather-changes
+        run: |
+          git diff --color
+          changes="$(git diff)"
+          delimiter="$(openssl rand -hex 8)"
+          echo "changes<<${delimiter}" >> "${GITHUB_OUTPUT}"
+          echo "${changes}" >> "${GITHUB_OUTPUT}"
+          echo "${delimiter}" >> "${GITHUB_OUTPUT}"
+
+      - name: Create or update pull request
+        id: cpr
+        uses: peter-evans/create-pull-request@v8
+        with:
+          commit-message: Update pre-commit dependencies
+          labels: cleanup-no-release-required, dependencies, github_actions
+          title: ⬆ Update pre-commit dependencies
+          body: |
+            ```diff
+            ${{ steps.gather-changes.outputs.changes }}
+            ```
+          author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+          branch: create-pull-request/pre-commit
+          committer: GitHub <noreply@github.com>
+          delete-branch: true
+          token: ${{ secrets.PHP_CURL_CLASS_BOT_TOKEN }}
+          push-to-fork: php-curl-class-helper/php-curl-class
+        env:
+          GITHUB_TOKEN: ${{ secrets.PHP_CURL_CLASS_BOT_TOKEN }}
+
+      - name: Pull request created or updated
+        if: ${{ steps.cpr.outputs.pull-request-number }}
+        run: |
+          echo "Pull request: ${{ steps.cpr.outputs.pull-request-url }}"
+
+      - name: Enable auto-merge for pull request
+        if: ${{ steps.cpr.outputs.pull-request-number }}
+        run: |
+          gh pr merge --auto --squash "${PR_URL}"
+        env:
+          PR_URL: ${{ steps.cpr.outputs.pull-request-url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Approve update
+        if: ${{ steps.cpr.outputs.pull-request-number }}
+        run: |
+          review_status="$(
+              gh pr view "${PR_URL}" \
+                  --json="reviewDecision" \
+                  --jq=".reviewDecision"
+          )"
+          echo "Pull request review status: ${review_status}"
+          if [[ "${review_status}" != "APPROVED" ]]; then
+              gh pr review --approve "${PR_URL}"
+          fi
+        env:
+          PR_URL: ${{ steps.cpr.outputs.pull-request-url }}
+          GITHUB_TOKEN: ${{ secrets.PHP_CURL_CLASS_TOKEN }}

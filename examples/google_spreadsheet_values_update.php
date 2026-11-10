@@ -1,4 +1,5 @@
 <?php
+
 require __DIR__ . '/../vendor/autoload.php';
 
 use Curl\Curl;
@@ -64,7 +65,7 @@ $curl->setHeader('Authorization', 'Bearer ' . $access_token->access_token);
 $curl->put($url, $data);
 
 if ($curl->error) {
-    echo 'Error: ' . $curl->errorCode . ': ' . $curl->errorMessage . "\n";
+    echo 'Error: ' . $curl->errorMessage . "\n";
     var_dump($curl);
 } else {
     var_dump($curl->response);

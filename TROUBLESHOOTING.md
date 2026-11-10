@@ -5,7 +5,7 @@
 ```php
 $curl = new Curl();
 $curl->get('https://www.example.com/');
-$curl->diagnose(); // <-- HERE
+$curl->diagnose(); // ← HERE
 ```
 
 ### Debug the entire curl instance
@@ -13,7 +13,7 @@ $curl->diagnose(); // <-- HERE
 ```php
 $curl = new Curl();
 $curl->get('https://www.example.com/');
-var_dump($curl); // <-- HERE
+var_dump($curl); // ← HERE
 ```
 
 ### Ensure you have the latest version of the library installed
@@ -48,12 +48,12 @@ $curl->get('https://www.example.com/');
 echo 'error: ' . $curl->error . "\n";
 echo 'errorCode: ' . $curl->errorCode . "\n";
 echo 'errorMessage: ' . $curl->errorMessage . "\n";
-echo 'curlError: ' . $curlError . "\n";
-echo 'curlErrorCode: ' . $curlErrorCode . "\n";
-echo 'curlErrorMessage: ' . $curlErrorMessage . "\n";
-echo 'httpError: ' . $httpError . "\n";
-echo 'httpStatusCode: ' . $httpStatusCode . "\n";
-echo 'httpErrorMessage: ' . $httpErrorMessage . "\n";
+echo 'curlError: ' . $curl->error . "\n";
+echo 'curlErrorCode: ' . $curl->errorCode . "\n";
+echo 'curlErrorMessage: ' . $curl->errorMessage . "\n";
+echo 'httpError: ' . $curl->httpError . "\n";
+echo 'httpStatusCode: ' . $curl->httpStatusCode . "\n";
+echo 'httpErrorMessage: ' . $curl->httpErrorMessage . "\n";
 echo 'requestHeaders:' . "\n";
 var_dump($curl->requestHeaders);
 echo 'responseHeaders:' . "\n";

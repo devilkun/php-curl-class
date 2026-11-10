@@ -1,4 +1,5 @@
 <?php
+
 require __DIR__ . '/../vendor/autoload.php';
 
 use Curl\Curl;
@@ -30,7 +31,7 @@ $curl->setStop(function ($ch, $header) {
 
 $curl->get('https://www.example.com/large-500-error');
 if ($curl->error) {
-    echo 'Error: ' . $curl->errorCode . ': ' . $curl->errorMessage . "\n";
+    echo 'Error: ' . $curl->errorMessage . "\n";
     echo 'Response content-length: ' . $curl->responseHeaders['content-length'] . "\n";
     echo 'Actual response size downloaded: ' . $curl->getInfo(CURLINFO_SIZE_DOWNLOAD) . "\n";
 } else {

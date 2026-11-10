@@ -1,4 +1,5 @@
 <?php
+
 require __DIR__ . '/../vendor/autoload.php';
 
 use Curl\Curl;
@@ -13,7 +14,7 @@ $curl->put('https://httpbin.org/put', [
 ]);
 
 if ($curl->error) {
-    echo 'Error: ' . $curl->errorCode . ': ' . $curl->errorMessage . "\n";
+    echo 'Error: ' . $curl->errorMessage . "\n";
 } else {
     echo 'Data server received via PUT:' . "\n";
     var_dump($curl->response->form);

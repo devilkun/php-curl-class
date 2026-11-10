@@ -1,9 +1,11 @@
 # PHP Curl Class: HTTP requests made easy
 
-[![](https://img.shields.io/github/release/php-curl-class/php-curl-class.svg?style=flat-square&sort=semver)](https://github.com/php-curl-class/php-curl-class/releases/)
-[![](https://img.shields.io/github/license/php-curl-class/php-curl-class.svg?style=flat-square)](https://github.com/php-curl-class/php-curl-class/blob/master/LICENSE)
-[![](https://img.shields.io/github/workflow/status/php-curl-class/php-curl-class/ci?style=flat-square)](https://github.com/php-curl-class/php-curl-class/actions/workflows/ci.yml)
-[![](https://img.shields.io/packagist/dt/php-curl-class/php-curl-class.svg?style=flat-square)](https://github.com/php-curl-class/php-curl-class/releases/)
+[![](https://img.shields.io/github/release/php-curl-class/php-curl-class.svg?style=for-the-badge&sort=semver)](https://github.com/php-curl-class/php-curl-class/releases/)
+[![](https://img.shields.io/github/license/php-curl-class/php-curl-class.svg?style=for-the-badge)](https://github.com/php-curl-class/php-curl-class/blob/master/LICENSE)
+[![](https://img.shields.io/github/actions/workflow/status/php-curl-class/php-curl-class/ci.yml?style=for-the-badge&label=build&branch=master)](https://github.com/php-curl-class/php-curl-class/actions/workflows/ci.yml)
+[![](https://img.shields.io/github/actions/workflow/status/php-curl-class/php-curl-class/release.yml?style=for-the-badge&label=release&branch=master)](https://github.com/php-curl-class/php-curl-class/releases/)
+[![](https://img.shields.io/github/actions/workflow/status/php-curl-class/php-curl-class/dependabot/dependabot-updates?style=for-the-badge&label=Dependabot&branch=master)](https://github.com/php-curl-class/php-curl-class/actions/workflows/dependabot/dependabot-updates)
+[![](https://img.shields.io/packagist/dt/php-curl-class/php-curl-class.svg?style=for-the-badge)](https://github.com/php-curl-class/php-curl-class/releases/)
 
 PHP Curl Class makes it easy to send HTTP requests and integrate with web APIs.
 
@@ -11,32 +13,34 @@ PHP Curl Class makes it easy to send HTTP requests and integrate with web APIs.
 
 ---
 
-- [Installation](#installation)
-- [Requirements](#requirements)
-- [Quick Start and Examples](#quick-start-and-examples)
-- [Available Methods](#available-methods)
-- [Security](#security)
-- [Troubleshooting](#troubleshooting)
-- [Run Tests](#run-tests)
-- [Contribute](#contribute)
+- [⚙️ Installation](#%EF%B8%8F-installation)
+- [📋 Requirements](#-requirements)
+- [🚀 Quick Start and Examples](#-quick-start-and-examples)
+- [📖 Available Methods](#-available-methods)
+- [🔒 Security](#-security)
+- [🛠️ Troubleshooting](#%EF%B8%8F-troubleshooting)
+- [🧪 Testing](#-testing)
+- [🤝 Contributing](#-contributing)
 
 ---
 
-### Installation
+### ⚙️ Installation
 
-To install PHP Curl Class, simply:
+To install PHP Curl Class, run the following command:
 
-    $ composer require php-curl-class/php-curl-class
+    composer require php-curl-class/php-curl-class
 
-For latest commit version:
+To install the latest commit version:
 
-    $ composer require php-curl-class/php-curl-class @dev
+    composer require php-curl-class/php-curl-class @dev
 
-### Requirements
+Installation instructions to use the `composer` command can be found on https://github.com/composer/composer.
 
-PHP Curl Class works with PHP 7.0, 7.1, 7.2, 7.3, 7.4, and 8.0.
+### 📋 Requirements
 
-### Quick Start and Examples
+PHP Curl Class works with PHP versions 8.5, 8.4, 8.3, 8.2, 8.1, and 8.0.
+
+### 🚀 Quick Start and Examples
 
 More examples are available under [/examples](https://github.com/php-curl-class/php-curl-class/tree/master/examples).
 
@@ -49,7 +53,8 @@ $curl = new Curl();
 $curl->get('https://www.example.com/');
 
 if ($curl->error) {
-    echo 'Error: ' . $curl->errorCode . ': ' . $curl->errorMessage . "\n";
+    echo 'Error: ' . $curl->errorMessage . "\n";
+    $curl->diagnose();
 } else {
     echo 'Response:' . "\n";
     var_dump($curl->response);
@@ -82,7 +87,7 @@ $curl->setCookie('key', 'value');
 $curl->get('https://www.example.com/');
 
 if ($curl->error) {
-    echo 'Error: ' . $curl->errorCode . ': ' . $curl->errorMessage . "\n";
+    echo 'Error: ' . $curl->errorMessage . "\n";
 } else {
     echo 'Response:' . "\n";
     var_dump($curl->response);
@@ -150,7 +155,6 @@ $curl->close();
 ```php
 // Example access to curl object.
 curl_set_opt($curl->curl, CURLOPT_USERAGENT, 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1');
-curl_close($curl->curl);
 ```
 
 ```php
@@ -190,12 +194,13 @@ $multi_curl->start(); // Blocks until all items in the queue have been processed
 
 More examples are available under [/examples](https://github.com/php-curl-class/php-curl-class/tree/master/examples).
 
-### Available Methods
+### 📖 Available Methods
 ```php
-Curl::__construct($base_url = null)
+Curl::__construct($base_url = null, $options = [])
 Curl::__destruct()
 Curl::__get($name)
-Curl::_fastDownload($url, $filename, $connections = 4) {
+Curl::__isset($name)
+Curl::afterSend($callback)
 Curl::attemptRetry()
 Curl::beforeSend($callback)
 Curl::buildPostData($data)
@@ -205,10 +210,12 @@ Curl::complete($callback)
 Curl::delete($url, $query_parameters = [], $data = [])
 Curl::diagnose($return = false)
 Curl::disableTimeout()
+Curl::displayCurlOptionValue($option, $value = null)
 Curl::download($url, $mixed_filename)
 Curl::error($callback)
 Curl::exec($ch = null)
 Curl::execDone()
+Curl::fastDownload($url, $filename, $connections = 4)
 Curl::get($url, $data = [])
 Curl::getAttempts()
 Curl::getBeforeSendCallback()
@@ -229,6 +236,7 @@ Curl::getId()
 Curl::getInfo($opt = null)
 Curl::getJsonDecoder()
 Curl::getOpt($option)
+Curl::getOptions()
 Curl::getRawResponse()
 Curl::getRawResponseHeaders()
 Curl::getRemainingRetries()
@@ -241,6 +249,7 @@ Curl::getRetries()
 Curl::getRetryDecider()
 Curl::getSuccessCallback()
 Curl::getUrl()
+Curl::getUserSetOptions()
 Curl::getXmlDecoder()
 Curl::head($url, $data = [])
 Curl::isChildOfMultiCurl()
@@ -265,14 +274,18 @@ Curl::setCookieJar($cookie_jar)
 Curl::setCookieString($string)
 Curl::setCookies($cookies)
 Curl::setDefaultDecoder($mixed = 'json')
+Curl::setDefaultHeaderOut()
 Curl::setDefaultJsonDecoder()
 Curl::setDefaultTimeout()
 Curl::setDefaultUserAgent()
 Curl::setDefaultXmlDecoder()
+Curl::setDelete($url, $query_parameters = [], $data = [])
 Curl::setDigestAuthentication($username, $password = '')
 Curl::setFile($file)
 Curl::setFollowLocation($follow_location = true)
 Curl::setForbidReuse($forbid_reuse = true)
+Curl::setGet($url, $data = [])
+Curl::setHead($url, $data = [])
 Curl::setHeader($key, $value)
 Curl::setHeaders($headers)
 Curl::setInterface($interface)
@@ -280,21 +293,29 @@ Curl::setJsonDecoder($mixed)
 Curl::setMaxFilesize($bytes)
 Curl::setMaximumRedirects($maximum_redirects)
 Curl::setOpt($option, $value)
+Curl::setOptions($url, $data = [])
 Curl::setOpts($options)
+Curl::setPatch($url, $data = [])
 Curl::setPort($port)
+Curl::setPost($url, $data = '', $follow_303_with_post = false)
+Curl::setProtocols($protocols)
 Curl::setProxy($proxy, $port = null, $username = null, $password = null)
 Curl::setProxyAuth($auth)
 Curl::setProxyTunnel($tunnel = true)
 Curl::setProxyType($type)
+Curl::setPut($url, $data = [])
 Curl::setRange($range)
+Curl::setRedirectProtocols($redirect_protocols)
 Curl::setReferer($referer)
 Curl::setReferrer($referrer)
 Curl::setRetry($mixed)
-Curl::setStop($callback)
+Curl::setSearch($url, $data = [])
+Curl::setStop($callback = null)
 Curl::setTimeout($seconds)
 Curl::setUrl($url, $mixed_data = '')
 Curl::setUserAgent($user_agent)
 Curl::setXmlDecoder($mixed)
+Curl::stop()
 Curl::success($callback)
 Curl::unsetHeader($key)
 Curl::unsetProxy()
@@ -311,11 +332,13 @@ MultiCurl::addPatch($url, $data = [])
 MultiCurl::addPost($url, $data = '', $follow_303_with_post = false)
 MultiCurl::addPut($url, $data = [])
 MultiCurl::addSearch($url, $data = [])
+MultiCurl::afterSend($callback)
 MultiCurl::beforeSend($callback)
 MultiCurl::close()
 MultiCurl::complete($callback)
 MultiCurl::disableTimeout()
 MultiCurl::error($callback)
+MultiCurl::getActiveCurls()
 MultiCurl::getOpt($option)
 MultiCurl::removeHeader($key)
 MultiCurl::setAutoReferer($auto_referer = true)
@@ -349,49 +372,33 @@ MultiCurl::setRange($range)
 MultiCurl::setRateLimit($rate_limit)
 MultiCurl::setReferer($referer)
 MultiCurl::setReferrer($referrer)
+MultiCurl::setRequestTimeAccuracy()
 MultiCurl::setRetry($mixed)
 MultiCurl::setTimeout($seconds)
 MultiCurl::setUrl($url, $mixed_data = '')
 MultiCurl::setUserAgent($user_agent)
 MultiCurl::setXmlDecoder($mixed)
 MultiCurl::start()
+MultiCurl::stop()
 MultiCurl::success($callback)
 MultiCurl::unsetHeader($key)
 MultiCurl::unsetProxy()
-MultiCurl::verbose($on = true, $output = STDERR)
+MultiCurl::verbose($on = true, $output = 'STDERR')
 ```
 
-### Security
+### 🔒 Security
 
 See [SECURITY](https://github.com/php-curl-class/php-curl-class/blob/master/SECURITY.md) for security considerations.
 
-### Troubleshooting
+### 🛠️ Troubleshooting
 
-See [TROUBLESHOOTING](https://github.com/php-curl-class/php-curl-class/blob/master/TROUBLESHOOTING.md) for troubleshooting.
+See [TROUBLESHOOTING](https://github.com/php-curl-class/php-curl-class/blob/master/TROUBLESHOOTING.md) for help troubleshooting.
 
-### Run Tests
+### 🧪 Testing
 
-To run tests:
+See [TESTING](https://github.com/php-curl-class/php-curl-class/blob/master/TESTING.md) for testing information.
 
-    $ git clone https://github.com/php-curl-class/php-curl-class.git
-    $ cd php-curl-class/
-    $ composer update
-    $ ./tests/run.sh
-
-To run select tests:
-
-    $ git clone https://github.com/php-curl-class/php-curl-class.git
-    $ cd php-curl-class/
-    $ composer update
-    $ ./tests/run.sh --filter=keyword
-
-To test all PHP versions in containers:
-
-    $ git clone https://github.com/php-curl-class/php-curl-class.git
-    $ cd php-curl-class/
-    $ ./tests/test_all.sh
-
-### Contribute
+### 🤝 Contributing
 
 1. Check for open issues or open a new issue to start a discussion around a bug or feature.
 1. Fork the repository on GitHub to start making your changes.

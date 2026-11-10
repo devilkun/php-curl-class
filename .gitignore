@@ -1,4 +1,6 @@
 vendor/
+venv/
 composer.lock
 
+.claude/
 .idea/

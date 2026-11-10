@@ -1,0 +1,37 @@
+name: Release
+
+on:
+  schedule:
+    # Stagger from the other scheduled workflows that write to master so its push doesn't leave their PRs behind.
+    - cron: '0 17 * * 1-4'
+  workflow_dispatch:
+
+jobs:
+  release:
+    # Prevent this workflow from running elsewhere.
+    if: github.repository_owner == 'php-curl-class'
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+          persist-credentials: false
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v10.3.3
+        with:
+          enable-cache: true
+          cache-dependency-glob: scripts/make_release_requirements.txt
+
+      - name: Set git details
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Make release
+        run: uv run --with-requirements scripts/make_release_requirements.txt python scripts/make_release.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.PHP_CURL_CLASS_TOKEN }}

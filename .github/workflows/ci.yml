@@ -1,11 +1,15 @@
-name: ci
+name: CI
 
 on:
   push:
     branches:
       - master
       - php5.x-master
+    paths-ignore:
+      - "scripts/make_release_requirements.json"
   pull_request:
+    paths-ignore:
+      - "scripts/make_release_requirements.json"
   schedule:
     - cron: '0 17 * * *'
 
@@ -14,20 +18,34 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: ['7.0', '7.1', '7.2', '7.3', '7.4', '8.0']
+        php-version:
+          - '8.0'
+          - '8.1'
+          - '8.2'
+          - '8.3'
+          - '8.4'
+          - '8.5'
+        future-release: [false]
+        include:
+          - php-version: '8.6'
+            future-release: true
       fail-fast: false
-    name: PHP ${{ matrix.php }}
+    name: PHP ${{ matrix.php-version }}
+    continue-on-error: ${{ matrix.future-release }}
 
     steps:
       - name: Set up php
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php }}
+          php-version: ${{ matrix.php-version }}
 
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: Test
-        run: bash tests/ci.sh
+        run: bash tests/run.sh
         env:
-          CI_PHP_VERSION: ${{ matrix.php }}
+          CI_PHP_VERSION: ${{ matrix.php-version }}
+          CI_PHP_FUTURE_RELEASE: ${{ matrix.future-release }}

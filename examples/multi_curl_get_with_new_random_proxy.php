@@ -1,4 +1,5 @@
 <?php
+
 require __DIR__ . '/../vendor/autoload.php';
 
 use Curl\ArrayUtil;
@@ -31,7 +32,7 @@ $multi_curl->addGet('https://httpbin.org/ip');
 
 $multi_curl->complete(function ($instance) {
     echo
-        'curl id ' . $instance->id . ':' . "\n" .
+        'curl id ' . $instance->id . ' completed:' . "\n" .
         '- ip: ' . $instance->response->origin . "\n" .
         '- proxy: ' . $instance->getOpt(CURLOPT_PROXY) . "\n" .
         '- url: ' . $instance->effectiveUrl . '' . "\n" .
